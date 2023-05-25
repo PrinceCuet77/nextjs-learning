@@ -20,6 +20,7 @@ Next JS is a React JS framework where React JS is a Javascript library.
       - [Linking Between Pages](#linking-between-pages)
       - [Preparing Our Project Pages](#preparing-our-project-pages)
       - [Rendering A List of (Dummy) Meetups](#rendering-a-list-of-dummy-meetups)
+      - [Adding A Form For Adding Meetups](#adding-a-form-for-adding-meetups)
 
 ## React JS lackings
 
@@ -301,7 +302,71 @@ function MainNavigation() {
 export default MainNavigation
 ```
 
-2.1 The content of the `components/meetups/MeetupItem.js` file:
+#### Rendering A List of (Dummy) Meetups
+
+The `data.js` file in the root directory:
+
+```js
+// Named import
+export const DUMMY_MEETUPS = [
+  {
+    id: 'm1',
+    title: 'A First Meetup',
+    image:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg',
+    address: 'Some address 5, 12345 Some City',
+    description: 'This is a first meetup!',
+  },
+  {
+    id: 'm2',
+    title: 'A Second Meetup',
+    image:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg',
+    address: 'Some address 10, 12345 Some City',
+    description: 'This is a second meetup!',
+  },
+]
+```
+
+The `pages/index.js` file:
+
+```js
+import MeetupList from '../components/meetups/MeetupList'
+import { DUMMY_MEETUPS } from '../data'
+
+const HomePage = () => {
+  return <MeetupList meetups={DUMMY_MEETUPS} />
+}
+
+export default HomePage
+```
+
+The content of the `components/meetups/MeetupList.js` file:
+
+```js
+import MeetupItem from './MeetupItem'
+import classes from './MeetupList.module.css'
+
+function MeetupList(props) {
+  return (
+    <ul className={classes.list}>
+      {props.meetups.map((meetup) => (
+        <MeetupItem
+          key={meetup.id}
+          id={meetup.id}
+          image={meetup.image}
+          title={meetup.title}
+          address={meetup.address}
+        />
+      ))}
+    </ul>
+  )
+}
+
+export default MeetupList
+```
+
+The content of the `components/meetups/MeetupItem.js` file:
 
 ```js
 import Card from '../ui/Card'
@@ -329,32 +394,27 @@ function MeetupItem(props) {
 export default MeetupItem
 ```
 
-2.2 The content of the `components/meetups/MeetupList.js` file:
+The content of the `components/ui/Card.js` file:
 
 ```js
-import MeetupItem from './MeetupItem'
-import classes from './MeetupList.module.css'
+import classes from './Card.module.css'
 
-function MeetupList(props) {
-  return (
-    <ul className={classes.list}>
-      {props.meetups.map((meetup) => (
-        <MeetupItem
-          key={meetup.id}
-          id={meetup.id}
-          image={meetup.image}
-          title={meetup.title}
-          address={meetup.address}
-        />
-      ))}
-    </ul>
-  )
+function Card(props) {
+  return <div className={classes.card}>{props.children}</div>
 }
 
-export default MeetupList
+export default Card
 ```
 
-2.3 The content of the `components/meetups/NewMeetupForm.js` file:
+#### Adding A Form For Adding Meetups
+
+The `pages/new-meetup/index.js` file:
+
+```js
+
+```
+
+The content of the `components/meetups/NewMeetupForm.js` file:
 
 ```js
 import { useRef } from 'react'
@@ -421,53 +481,18 @@ function NewMeetupForm(props) {
 export default NewMeetupForm
 ```
 
-3.1 The content of the `components/ui/Card.js` file:
+The `pages/new-meetup/index.js` file:
 
 ```js
-import classes from './Card.module.css'
+import NewMeetupForm from '../../components/meetups/NewMeetupForm'
 
-function Card(props) {
-  return <div className={classes.card}>{props.children}</div>
+const NewMeetupPage = () => {
+  const addMeetupHandler = (enteredMeetupData) => {
+    console.log(enteredMeetupData)
+  }
+
+  return <NewMeetupForm onAddMeetup={addMeetupHandler} />
 }
 
-export default Card
-```
-
-#### Rendering A List of (Dummy) Meetups
-
-The `data.js` file in the root directory:
-
-```js
-// Named import
-export const DUMMY_MEETUPS = [
-  {
-    id: 'm1',
-    title: 'A First Meetup',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg',
-    address: 'Some address 5, 12345 Some City',
-    description: 'This is a first meetup!',
-  },
-  {
-    id: 'm2',
-    title: 'A Second Meetup',
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg',
-    address: 'Some address 10, 12345 Some City',
-    description: 'This is a second meetup!',
-  },
-]
-```
-
-The `pages/index.js` file:
-
-```js
-import MeetupList from '../components/meetups/MeetupList'
-import { DUMMY_MEETUPS } from '../data'
-
-const HomePage = () => {
-  return <MeetupList meetups={DUMMY_MEETUPS} />
-}
-
-export default HomePage
+export default NewMeetupPage
 ```
