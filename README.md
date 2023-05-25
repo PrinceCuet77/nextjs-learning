@@ -1,6 +1,11 @@
 # Next JS Learning
 
+Next JS is a React JS framework where React JS is a Javascript library.
+
+## The Table Of Contents
+
 - [Next JS Learning](#next-js-learning)
+  - [The Table Of Contents](#the-table-of-contents)
   - [React JS lackings](#react-js-lackings)
   - [Next JS - Key Features and Benefits](#next-js---key-features-and-benefits)
     - [How To Run](#how-to-run)
@@ -12,6 +17,7 @@
       - [Adding Nested Pages / Paths](#adding-nested-pages--paths)
       - [Creating Dynamic Pages](#creating-dynamic-pages)
       - [Extracting Dynamic Route Data](#extracting-dynamic-route-data)
+      - [Linking Between Pages](#linking-between-pages)
 
 ## React JS lackings
 
@@ -173,4 +179,39 @@ const DetailPage = () => {
 }
 
 export default DetailPage
+```
+
+#### Linking Between Pages
+
+- Using `a` tag is not creating a single page application.
+- To create a SPA, use:
+
+```js
+import Link from 'next/link'
+```
+
+- Use `Link` instead of `a` tag.
+
+The content of the `pages/news/index.js` file:
+
+```js
+import Link from 'next/link'
+
+const NewPage = () => {
+  return (
+    <>
+      <h1>The News Page</h1>
+      <ul>
+        <li>
+          <Link href='/news/nextjs-is-a-great-framework'>
+            NextJS Is A Great FrameWork
+          </Link>
+        </li>
+        <li>Something Else</li>
+      </ul>
+    </>
+  )
+}
+
+export default NewPage
 ```
