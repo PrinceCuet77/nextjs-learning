@@ -1,7 +1,7 @@
 // our-domain.com/news
 
 const NewPage = () => {
-    return <div>NewPage</div>
+  return <h1>NewPage</h1>
 }
 
 export default NewPage

@@ -1,37 +1,38 @@
 # Next JS Learning
 
--   [Next JS Learning](#next-js-learning)
-    -   [React JS lackings](#react-js-lackings)
-    -   [Next JS - Key Features and Benefits](#next-js---key-features-and-benefits)
-        -   [How To Run](#how-to-run)
-        -   [File Structure](#file-structure)
-        -   [Before Start](#before-start)
-        -   [Starter File Stucture](#starter-file-stucture)
-        -   [Start Coding](#start-coding)
-            -   [Adding First Pages To The Project](#adding-first-pages-to-the-project)
+- [Next JS Learning](#next-js-learning)
+  - [React JS lackings](#react-js-lackings)
+  - [Next JS - Key Features and Benefits](#next-js---key-features-and-benefits)
+    - [How To Run](#how-to-run)
+    - [File Structure](#file-structure)
+    - [Before Start](#before-start)
+    - [Starter File Stucture](#starter-file-stucture)
+    - [Start Coding](#start-coding)
+      - [Adding First Pages To The Project](#adding-first-pages-to-the-project)
+      - [Adding Nested Pages / Paths](#adding-nested-pages--paths)
 
 ## React JS lackings
 
--   Client-side javascript library
--   Data fetching from server-side, so loading time exist
--   SEO (Search Engine Optimization) can not possible because of client-side rendering
+- Client-side javascript library
+- Data fetching from server-side, so loading time exist
+- SEO (Search Engine Optimization) can not possible because of client-side rendering
 
 ## Next JS - Key Features and Benefits
 
 Server side Rendering
 
--   Automatic page pre-rendering: Great for SEO and initial load
--   Blending client-side and server-side: Fetch data on the server and render finished pages
+- Automatic page pre-rendering: Great for SEO and initial load
+- Blending client-side and server-side: Fetch data on the server and render finished pages
 
 File-based Routing
 
--   Define pages and routes with file and folders instead of code
--   Less code, less work, highly understandable
+- Define pages and routes with file and folders instead of code
+- Less code, less work, highly understandable
 
 Fullstack Capabilities
 
--   Easily add backend (server-side) code to your Next/React apps
--   Storing data, getting data, authentication etc. can be added to your React projects
+- Easily add backend (server-side) code to your Next/React apps
+- Storing data, getting data, authentication etc. can be added to your React projects
 
 ### How To Run
 
@@ -63,10 +64,10 @@ Removes some files
 
 ```sh
 - pages/
-  - _app.js
+    - _app.js
 - public # Empty
 - styles
-  - globals.css
+    - globals.css
 ```
 
 ### Start Coding
@@ -79,7 +80,7 @@ Creates `pages/index.js` file:
 // our-domain.com/
 
 const HomePage = () => {
-    return <div>HomePage</div>
+  return <h1>HomePage</h1>
 }
 
 export default HomePage
@@ -91,8 +92,42 @@ Creates `pages/news.js` file:
 // our-domain.com/news
 
 const NewPage = () => {
-    return <div>NewPage</div>
+  return <h1>NewPage</h1>
 }
 
 export default NewPage
+```
+
+#### Adding Nested Pages / Paths
+
+File structure is working in two modes:
+
+1. In `pages/` folder, I can denote path name as a file name
+
+```sh
+- pages/
+    - index.js # http://localhost:3000/
+    - news.js # http://localhost:3000/news
+```
+
+2. I create nested folder in `pages/` folder and demote path name as index.js
+
+```sh
+- pages/
+    - index.js # http://localhost:3000/
+    - news/
+        - index.js # http://localhost:3000/news
+        - something-important.js # http://localhost:3000/news/something-important
+```
+
+Creates `pages/news/something-important.js` file:
+
+```js
+// our-domain.com/news/something-important
+
+const DetailPage = () => {
+  return <h1>DetailPage</h1>
+}
+
+export default DetailPage
 ```
