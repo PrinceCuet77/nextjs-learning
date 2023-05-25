@@ -10,6 +10,7 @@
     - [Start Coding](#start-coding)
       - [Adding First Pages To The Project](#adding-first-pages-to-the-project)
       - [Adding Nested Pages / Paths](#adding-nested-pages--paths)
+      - [Creating Dynamic Pages](#creating-dynamic-pages)
 
 ## React JS lackings
 
@@ -130,4 +131,17 @@ const DetailPage = () => {
 }
 
 export default DetailPage
+```
+
+#### Creating Dynamic Pages
+
+- Use `[newsId].js` in `pages/news/` folder to create a dynamic page.
+- `newsId` is called the identifier.
+- Anything hitting after `http://localhost:3000/news/` can show the content of `[newsId].js` file
+- For example:
+
+```sh
+http://localhost:3000/news/something-important
+http://localhost:3000/news/something-else
+http://localhost:3000/news/another-file # etc.
 ```
