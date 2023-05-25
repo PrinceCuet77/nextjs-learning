@@ -18,6 +18,7 @@ Next JS is a React JS framework where React JS is a Javascript library.
       - [Creating Dynamic Pages](#creating-dynamic-pages)
       - [Extracting Dynamic Route Data](#extracting-dynamic-route-data)
       - [Linking Between Pages](#linking-between-pages)
+      - [Preparing Our Project Pages](#preparing-our-project-pages)
 
 ## React JS lackings
 
@@ -214,4 +215,219 @@ const NewPage = () => {
 }
 
 export default NewPage
+```
+
+#### Preparing Our Project Pages
+
+- Add some files
+
+```sh
+- components/ # Root directory. 'components' folder stores all the components.
+    - layout
+        - Layout.js
+        - Layout.module.css
+        - MainNavigation.js
+        - MainNavigation.module.css
+    - meetups
+        - MeetupItem.js
+        - MeetupItem.module.css
+        - MeetupList.js
+        - MeetupList.module.css
+        - NewMeetupForm.js
+        - NewMeetupForm.module.css
+    - ui
+        - Card.js
+        - Card.module.css
+- pages/ # Root directory
+    - [meetupId] # Directory
+        - index.js
+    - new-meetup
+        - index.js
+```
+
+- Remove some files
+
+```sh
+- pages/news/
+    - [newsId].js
+    - index.js
+- index.js
+```
+
+- Re-edit `styles/globals.css` files
+
+  1.1 The content of the `components/layout/Layout.js` file:
+
+```js
+import MainNavigation from './MainNavigation'
+import classes from './Layout.module.css'
+
+function Layout(props) {
+  return (
+    <div>
+      <MainNavigation />
+      <main className={classes.main}>{props.children}</main>
+    </div>
+  )
+}
+
+export default Layout
+```
+
+1.2 The content of the `components/layout/MainNavigation.js` file:
+
+```js
+import classes from './MainNavigation.module.css'
+
+function MainNavigation() {
+  return (
+    <header className={classes.header}>
+      <div className={classes.logo}>React Meetups</div>
+      <nav>
+        <ul>
+          <li>
+            <Link to='/'>All Meetups</Link>
+          </li>
+          <li>
+            <Link to='/new-meetup'>Add New Meetup</Link>
+          </li>
+        </ul>
+      </nav>
+    </header>
+  )
+}
+
+export default MainNavigation
+```
+
+2.1 The content of the `components/meetups/MeetupItem.js` file:
+
+```js
+import Card from '../ui/Card'
+import classes from './MeetupItem.module.css'
+
+function MeetupItem(props) {
+  return (
+    <li className={classes.item}>
+      <Card>
+        <div className={classes.image}>
+          <img src={props.image} alt={props.title} />
+        </div>
+        <div className={classes.content}>
+          <h3>{props.title}</h3>
+          <address>{props.address}</address>
+        </div>
+        <div className={classes.actions}>
+          <button>Show Details</button>
+        </div>
+      </Card>
+    </li>
+  )
+}
+
+export default MeetupItem
+```
+
+2.2 The content of the `components/meetups/MeetupList.js` file:
+
+```js
+import MeetupItem from './MeetupItem'
+import classes from './MeetupList.module.css'
+
+function MeetupList(props) {
+  return (
+    <ul className={classes.list}>
+      {props.meetups.map((meetup) => (
+        <MeetupItem
+          key={meetup.id}
+          id={meetup.id}
+          image={meetup.image}
+          title={meetup.title}
+          address={meetup.address}
+        />
+      ))}
+    </ul>
+  )
+}
+
+export default MeetupList
+```
+
+2.3 The content of the `components/meetups/NewMeetupForm.js` file:
+
+```js
+import { useRef } from 'react'
+
+import Card from '../ui/Card'
+import classes from './NewMeetupForm.module.css'
+
+function NewMeetupForm(props) {
+  const titleInputRef = useRef()
+  const imageInputRef = useRef()
+  const addressInputRef = useRef()
+  const descriptionInputRef = useRef()
+
+  function submitHandler(event) {
+    event.preventDefault()
+
+    const enteredTitle = titleInputRef.current.value
+    const enteredImage = imageInputRef.current.value
+    const enteredAddress = addressInputRef.current.value
+    const enteredDescription = descriptionInputRef.current.value
+
+    const meetupData = {
+      title: enteredTitle,
+      image: enteredImage,
+      address: enteredAddress,
+      description: enteredDescription,
+    }
+
+    props.onAddMeetup(meetupData)
+  }
+
+  return (
+    <Card>
+      <form className={classes.form} onSubmit={submitHandler}>
+        <div className={classes.control}>
+          <label htmlFor='title'>Meetup Title</label>
+          <input type='text' required id='title' ref={titleInputRef} />
+        </div>
+        <div className={classes.control}>
+          <label htmlFor='image'>Meetup Image</label>
+          <input type='url' required id='image' ref={imageInputRef} />
+        </div>
+        <div className={classes.control}>
+          <label htmlFor='address'>Address</label>
+          <input type='text' required id='address' ref={addressInputRef} />
+        </div>
+        <div className={classes.control}>
+          <label htmlFor='description'>Description</label>
+          <textarea
+            id='description'
+            required
+            rows='5'
+            ref={descriptionInputRef}
+          ></textarea>
+        </div>
+        <div className={classes.actions}>
+          <button>Add Meetup</button>
+        </div>
+      </form>
+    </Card>
+  )
+}
+
+export default NewMeetupForm
+```
+
+3.1 The content of the `components/ui/Card.js` file:
+
+```js
+import classes from './Card.module.css'
+
+function Card(props) {
+  return <div className={classes.card}>{props.children}</div>
+}
+
+export default Card
 ```
