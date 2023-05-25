@@ -11,6 +11,7 @@
       - [Adding First Pages To The Project](#adding-first-pages-to-the-project)
       - [Adding Nested Pages / Paths](#adding-nested-pages--paths)
       - [Creating Dynamic Pages](#creating-dynamic-pages)
+      - [Extracting Dynamic Route Data](#extracting-dynamic-route-data)
 
 ## React JS lackings
 
@@ -144,4 +145,32 @@ export default DetailPage
 http://localhost:3000/news/something-important
 http://localhost:3000/news/something-else
 http://localhost:3000/news/another-file # etc.
+```
+
+#### Extracting Dynamic Route Data
+
+- To extract the concrete value entered in the URL, nextjs has special hook (react hook)
+
+```js
+import { useRouter } from 'next/router'
+```
+
+The content of `pages/news/[newsId].js` file:
+
+```js
+import { useRouter } from 'next/router'
+
+const DetailPage = () => {
+  const router = useRouter()
+
+  // For 'http://localhost:3000/news/something' then,
+  console.log(router.query.newsId) // something
+
+  // send a request to the backend API
+  // to fetch the news item with newsId
+
+  return <h1>DetailPage</h1>
+}
+
+export default DetailPage
 ```
