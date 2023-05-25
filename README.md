@@ -24,6 +24,7 @@ Next JS is a React JS framework where React JS is a Javascript library.
       - [The '\_app.js' File \& Wrapper Components](#the-_appjs-file--wrapper-components)
       - [Programmatic Navigation](#programmatic-navigation)
       - [Adding Custom Components \& Styling With CSS](#adding-custom-components--styling-with-css)
+      - [How NextJS Page Pre-Rendering Actually Works](#how-nextjs-page-pre-rendering-actually-works)
 
 ## React JS lackings
 
@@ -631,4 +632,204 @@ const MeetupDetail = ({ id, title, image, address, description }) => {
 }
 
 export default MeetupDetail
+```
+
+#### How NextJS Page Pre-Rendering Actually Works
+
+- Two forms of Pre-Rendering
+  - Static Generation
+  - Server-side Rendering
+
+**Static Generation:**
+
+- A page component is pre-rendered when you build your application or project in nextjs for production
+- By default, page is not pre-rendered on the server when a request reaches the server
+- But instead it is pre-render when a developer build the site for production
+- That means after it was deployed that pre-rendered page does not change
+- If the data is updated then pre-rendered page needs to change, I need to start that build process and redeploy again
+- If I need to wait for data fetching to a page component, I can export a special function named `getStaticProps()` inside that page (not other component file, only page component file)
+- NextJS searches that function and executes that function during pre-rendering process
+- NextJS calls `getStaticProps()` function before calling that page component
+- The `getStaticProps()` function prepare props for this page
+- This props contain the data this page needs
+- This `getStaticProps()` function is processing its work in the build time not client side rendering or in the client machine
+- It returns an object with a property named `props` which will receive that page component as `props` parameter in it
+- If the fetching data does change frequently, there is an extra property which I can add to this returned object named `revalidate` property
+- This `revalidate` property unlock a feature called incremental static generation
+- The value of that property ensure that this page will occasionally be re-pre-generated on the server after deployment
+- So that I do not have to redeploy and rebuild all the time just because some data changed
+
+```js
+export async function getStaticProps(context) {
+  // 'context' is optional
+  // Fetch data from an API
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS,
+    },
+    revalidate: 10, // 10 sec
+  }
+}
+```
+
+The `pages/index.js` file:
+
+```js
+import MeetupList from '../components/meetups/MeetupList'
+import { DUMMY_MEETUPS } from '../data'
+
+const HomePage = (props) => {
+  // 'props' is pre-rendering in 'getStaticProps()' function
+  return <MeetupList meetups={props.meetups} />
+}
+
+export async function getStaticProps() {
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS,
+    },
+  }
+}
+
+export default HomePage
+```
+
+**Server-side Rendering:**
+
+- Sometimes I need to regenarate this page for every incoming request
+- pre-generate the page dynamically on the server not in the client side
+- That function is named as `getServerSideProps()`
+
+```js
+export async function getServerSideProps(context) {
+  // 'context' is optional
+  // Use for validation (Node JS)
+  const req = context.req
+  const res = context.res
+
+  // Fetch data from an API
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS,
+    },
+  }
+}
+```
+
+- Facts:
+  - If I need validation and `revalidate` property does not help me for pre-rendering then `getServerSideProps()` is better choice
+  - If I do not want to pre-render after every incoming request means I receive a request every 11 minutes then I can set `revalidate` 600 second, this case `getStaticProps()` is better choice
+
+The `pages/index.js` file:
+
+```js
+import MeetupList from '../components/meetups/MeetupList'
+import { DUMMY_MEETUPS } from '../data'
+
+const HomePage = (props) => {
+  // 'props' is pre-rendering in 'getServerSideProps()' function
+  return <MeetupList meetups={props.meetups} />
+}
+
+export async function getServerSideProps(context) {
+  const req = context.req
+  const res = context.res
+
+  // Fetch data from an API
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS,
+    },
+  }
+}
+
+export default HomePage
+```
+
+Basically, which function do I use or better in a specific case depends on _how often my data changes and I need access to the request object_
+
+**getStaticPaths()**
+
+- While using `getStaticProps()` function, I must use `getStaticPaths()` function.
+- NextJS needs to pre-generate all the versions of the dynamic page in advance for all the supported ids
+- Because it's dynamic, NextJS needs to know which id values it should pre-generate the page
+- So, I have to notify NextJS that users might be entering at runtime using that `meetupId`s
+- If user enter an id which NextJS did not pre-generate a page, user will see a `404` error
+- The `getStaticPaths()` function returns an object which describes all the dynamic segment values (in this case all the `meetupId`s)
+- Based on this `meetupId`s, NextJS pre-generate this pages
+- A property named `fallback` tells NextJs whether my `paths` array contains all supported parameter values or some of them
+  - `false` means
+    - All supported `meetupId` values
+    - If user mention enter anything that is not present in support, then the user will see `404` page
+  - `true` means
+    - Some supported `meetupId` values
+    - This case NextJS will try to generate a page for this page `meetupId` dynamically on the server for the incoming request
+    - Is a good choice (Because some are already generated and others or rare `meetupId` will generate based on incoming request)
+
+```js
+export async function getStaticPaths() {
+  return {
+    fallback: false,
+    paths: [
+      // one object per version of the dynamic page
+      {
+        params: {
+          meetupId: 'm1',
+        },
+      },
+      {
+        params: {
+          meetupId: 'm2',
+        },
+      },
+    ],
+  }
+}
+```
+
+The `pages/[meetupId]/index.js` file:
+
+```js
+import MeetupDetail from '../../components/meetups/MeetupDetail'
+import { DUMMY_MEETUPS } from '../../data'
+
+const MeetupDetails = (props) => {
+  return <MeetupDetail {...props.meetupData} />
+}
+
+export async function getStaticPaths() {
+  return {
+    fallback: false, // All supported
+    paths: [
+      // One object per version of the dynamic page
+      {
+        params: {
+          meetupId: 'm1',
+        },
+      },
+      {
+        params: {
+          meetupId: 'm2',
+        },
+      },
+    ],
+  }
+}
+
+export async function getStaticProps(context) {
+  const meetupId = context.params.meetupId
+
+  // Just use for static data (not recommanded but only for making workable)
+  let index = -1
+  if (meetupId === 'm1') index = 0
+  else index = 1
+
+  return {
+    props: {
+      meetupData: DUMMY_MEETUPS[index],
+    },
+  }
+}
+
+export default MeetupDetails
 ```
