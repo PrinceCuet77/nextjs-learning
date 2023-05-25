@@ -19,6 +19,7 @@ Next JS is a React JS framework where React JS is a Javascript library.
       - [Extracting Dynamic Route Data](#extracting-dynamic-route-data)
       - [Linking Between Pages](#linking-between-pages)
       - [Preparing Our Project Pages](#preparing-our-project-pages)
+      - [Rendering A List of (Dummy) Meetups](#rendering-a-list-of-dummy-meetups)
 
 ## React JS lackings
 
@@ -430,4 +431,43 @@ function Card(props) {
 }
 
 export default Card
+```
+
+#### Rendering A List of (Dummy) Meetups
+
+The `data.js` file in the root directory:
+
+```js
+// Named import
+export const DUMMY_MEETUPS = [
+  {
+    id: 'm1',
+    title: 'A First Meetup',
+    image:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg',
+    address: 'Some address 5, 12345 Some City',
+    description: 'This is a first meetup!',
+  },
+  {
+    id: 'm2',
+    title: 'A Second Meetup',
+    image:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg',
+    address: 'Some address 10, 12345 Some City',
+    description: 'This is a second meetup!',
+  },
+]
+```
+
+The `pages/index.js` file:
+
+```js
+import MeetupList from '../components/meetups/MeetupList'
+import { DUMMY_MEETUPS } from '../data'
+
+const HomePage = () => {
+  return <MeetupList meetups={DUMMY_MEETUPS} />
+}
+
+export default HomePage
 ```
