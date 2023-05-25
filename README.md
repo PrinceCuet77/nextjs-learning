@@ -21,6 +21,7 @@ Next JS is a React JS framework where React JS is a Javascript library.
       - [Preparing Our Project Pages](#preparing-our-project-pages)
       - [Rendering A List of (Dummy) Meetups](#rendering-a-list-of-dummy-meetups)
       - [Adding A Form For Adding Meetups](#adding-a-form-for-adding-meetups)
+      - [The '\_app.js' File \& Wrapper Components](#the-_appjs-file--wrapper-components)
 
 ## React JS lackings
 
@@ -258,50 +259,6 @@ export default NewPage
 
 - Re-edit `styles/globals.css` files
 
-  1.1 The content of the `components/layout/Layout.js` file:
-
-```js
-import MainNavigation from './MainNavigation'
-import classes from './Layout.module.css'
-
-function Layout(props) {
-  return (
-    <div>
-      <MainNavigation />
-      <main className={classes.main}>{props.children}</main>
-    </div>
-  )
-}
-
-export default Layout
-```
-
-1.2 The content of the `components/layout/MainNavigation.js` file:
-
-```js
-import classes from './MainNavigation.module.css'
-
-function MainNavigation() {
-  return (
-    <header className={classes.header}>
-      <div className={classes.logo}>React Meetups</div>
-      <nav>
-        <ul>
-          <li>
-            <Link to='/'>All Meetups</Link>
-          </li>
-          <li>
-            <Link to='/new-meetup'>Add New Meetup</Link>
-          </li>
-        </ul>
-      </nav>
-    </header>
-  )
-}
-
-export default MainNavigation
-```
-
 #### Rendering A List of (Dummy) Meetups
 
 The `data.js` file in the root directory:
@@ -495,4 +452,74 @@ const NewMeetupPage = () => {
 }
 
 export default NewMeetupPage
+```
+
+#### The '_app.js' File & Wrapper Components
+
+`pages/_app.js` file:
+
+- Root component(`MyApp`) which render Next JS
+- `Component` props - page content what should be rendered
+- `pageProps` props - specific props our pages might be getting
+- This `MyApp` component is the actual page content of our different pages and it will change whenever we navigate from page a to page b.
+- Utilizing this `_app.js` file and simply wrap this component with our layout
+- So that we don't have to do it inside of our different page files
+
+```js
+import Layout from '../components/layout/Layout'
+import '../styles/globals.css'
+
+function MyApp({ Component, pageProps }) {
+  return (
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  )
+}
+
+export default MyApp
+```
+
+The content of the `components/layout/Layout.js` file:
+
+```js
+import MainNavigation from './MainNavigation'
+import classes from './Layout.module.css'
+
+function Layout(props) {
+  return (
+    <div>
+      <MainNavigation />
+      <main className={classes.main}>{props.children}</main>
+    </div>
+  )
+}
+
+export default Layout
+```
+
+The content of the `components/layout/MainNavigation.js` file:
+
+```js
+import classes from './MainNavigation.module.css'
+
+function MainNavigation() {
+  return (
+    <header className={classes.header}>
+      <div className={classes.logo}>React Meetups</div>
+      <nav>
+        <ul>
+          <li>
+            <Link to='/'>All Meetups</Link>
+          </li>
+          <li>
+            <Link to='/new-meetup'>Add New Meetup</Link>
+          </li>
+        </ul>
+      </nav>
+    </header>
+  )
+}
+
+export default MainNavigation
 ```
