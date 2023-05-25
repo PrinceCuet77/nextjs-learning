@@ -23,6 +23,7 @@ Next JS is a React JS framework where React JS is a Javascript library.
       - [Adding A Form For Adding Meetups](#adding-a-form-for-adding-meetups)
       - [The '\_app.js' File \& Wrapper Components](#the-_appjs-file--wrapper-components)
       - [Programmatic Navigation](#programmatic-navigation)
+      - [Adding Custom Components \& Styling With CSS](#adding-custom-components--styling-with-css)
 
 ## React JS lackings
 
@@ -561,4 +562,73 @@ function MeetupItem(props) {
 }
 
 export default MeetupItem
+```
+
+#### Adding Custom Components & Styling With CSS
+
+- Unlock a features called css module
+- It allows to scope css class styles to a react component and
+- It is supported out of the box in next js projects
+- Named css file like `file.module.css` then import that file like:
+
+```js
+import classes from './MeetupDetail.module.css'
+```
+
+- Behind the scenes it will transform the css classes
+- So that the class ensures class name are unique per component
+- That ensures the styles can't spill over to other component
+- That `classes` is now like an object and all the styles inside that file can treat like a property of that object
+
+```js
+const MeetupDetail = (props) = {
+  return (
+    <section className={classes.detail}>...</section>
+  )
+}
+```
+
+The content of `MeetupDetail.module.css` file:
+
+```css
+.detail {
+  text-align: center;
+}
+
+.detail img {
+  width: 100%;
+}
+```
+
+The `pages/[meetupId]/index.js` file:
+
+```js
+import MeetupDetail from '../../components/meetups/MeetupDetail'
+import { DUMMY_MEETUPS } from '../../data'
+
+const MeetupDetails = () => {
+  return <MeetupDetail {...DUMMY_MEETUPS[0]} />
+}
+
+export default MeetupDetails
+```
+
+The `components/meetups/MeetupDetail.js` file:
+
+```js
+import classes from './MeetupDetail.module.css'
+
+const MeetupDetail = ({ id, title, image, address, description }) => {
+  console.log('a')
+  return (
+    <section className={classes.detail}>
+      <img src={image} alt='' />
+      <h1>{title}</h1>
+      <address>{address}</address>
+      <p>{description}</p>
+    </section>
+  )
+}
+
+export default MeetupDetail
 ```
