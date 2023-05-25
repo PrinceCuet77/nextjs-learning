@@ -22,6 +22,7 @@ Next JS is a React JS framework where React JS is a Javascript library.
       - [Rendering A List of (Dummy) Meetups](#rendering-a-list-of-dummy-meetups)
       - [Adding A Form For Adding Meetups](#adding-a-form-for-adding-meetups)
       - [The '\_app.js' File \& Wrapper Components](#the-_appjs-file--wrapper-components)
+      - [Programmatic Navigation](#programmatic-navigation)
 
 ## React JS lackings
 
@@ -454,7 +455,7 @@ const NewMeetupPage = () => {
 export default NewMeetupPage
 ```
 
-#### The '_app.js' File & Wrapper Components
+#### The '\_app.js' File & Wrapper Components
 
 `pages/_app.js` file:
 
@@ -501,6 +502,7 @@ export default Layout
 The content of the `components/layout/MainNavigation.js` file:
 
 ```js
+import Link from 'next/link'
 import classes from './MainNavigation.module.css'
 
 function MainNavigation() {
@@ -510,10 +512,10 @@ function MainNavigation() {
       <nav>
         <ul>
           <li>
-            <Link to='/'>All Meetups</Link>
+            <Link href='/'>All Meetups</Link>
           </li>
           <li>
-            <Link to='/new-meetup'>Add New Meetup</Link>
+            <Link href='/new-meetup'>Add New Meetup</Link>
           </li>
         </ul>
       </nav>
@@ -522,4 +524,41 @@ function MainNavigation() {
 }
 
 export default MainNavigation
+```
+
+#### Programmatic Navigation
+
+The `components/meetups/MeetupItem.js` file:
+
+```js
+import { useRouter } from 'next/router'
+import Card from '../ui/Card'
+import classes from './MeetupItem.module.css'
+
+function MeetupItem(props) {
+  const router = useRouter()
+
+  const showDetailsHandler = () => {
+    router.push('/' + props.id) // http://localhost:3000/m1 (props.id = 'm1')
+  }
+
+  return (
+    <li className={classes.item}>
+      <Card>
+        <div className={classes.image}>
+          <img src={props.image} alt={props.title} />
+        </div>
+        <div className={classes.content}>
+          <h3>{props.title}</h3>
+          <address>{props.address}</address>
+        </div>
+        <div className={classes.actions}>
+          <button onClick={showDetailsHandler}>Show Details</button>
+        </div>
+      </Card>
+    </li>
+  )
+}
+
+export default MeetupItem
 ```
