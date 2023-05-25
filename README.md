@@ -1,12 +1,22 @@
 # Next JS Learning
 
-## React Js lackings
+-   [Next JS Learning](#next-js-learning)
+    -   [React JS lackings](#react-js-lackings)
+    -   [Next JS - Key Features and Benefits](#next-js---key-features-and-benefits)
+        -   [How To Run](#how-to-run)
+        -   [File Structure](#file-structure)
+        -   [Before Start](#before-start)
+        -   [Starter File Stucture](#starter-file-stucture)
+        -   [Start Coding](#start-coding)
+            -   [Adding First Pages To The Project](#adding-first-pages-to-the-project)
+
+## React JS lackings
 
 -   Client-side javascript library
 -   Data fetching from server-side, so loading time exist
 -   SEO (Search Engine Optimization) can not possible because of client-side rendering
 
-## Next Js - Key Features and Benefits
+## Next JS - Key Features and Benefits
 
 Server side Rendering
 
@@ -33,9 +43,9 @@ npm run dev # http://localhost:3000/
 
 ### File Structure
 
-1. pages/ - setup file-based routing
-2. public/ - holds public resources like images
-3. styles/ - holds style files like css
+1. `pages/` - setup file-based routing
+2. `public/` - holds public resources like images
+3. `styles/` - holds style files like css
 
 ### Before Start
 
@@ -57,4 +67,32 @@ Removes some files
 - public # Empty
 - styles
   - globals.css
+```
+
+### Start Coding
+
+#### Adding First Pages To The Project
+
+Creates `pages/index.js` file:
+
+```js
+// our-domain.com/
+
+const HomePage = () => {
+    return <div>HomePage</div>
+}
+
+export default HomePage
+```
+
+Creates `pages/news.js` file:
+
+```js
+// our-domain.com/news
+
+const NewPage = () => {
+    return <div>NewPage</div>
+}
+
+export default NewPage
 ```
