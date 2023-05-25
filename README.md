@@ -25,6 +25,9 @@ Next JS is a React JS framework where React JS is a Javascript library.
       - [Programmatic Navigation](#programmatic-navigation)
       - [Adding Custom Components \& Styling With CSS](#adding-custom-components--styling-with-css)
       - [How NextJS Page Pre-Rendering Actually Works](#how-nextjs-page-pre-rendering-actually-works)
+      - [Introduction API Routes](#introduction-api-routes)
+      - [Pre-rendering](#pre-rendering)
+- [Getting Meetup Detail Data \& Paths](#getting-meetup-detail-data--paths)
 
 ## React JS lackings
 
@@ -833,3 +836,38 @@ export async function getStaticProps(context) {
 
 export default MeetupDetails
 ```
+
+#### Introduction API Routes
+
+- API routes allow to build my own API endpoints as part of this NextJS project
+- They will be served by the same server as my NextJS app
+- To support that, add `pages/api`
+- NextJS will pick up any JS files stored in there and turn those files into api routes
+- Endpoints can be targeted by requests and that should receive json and return json
+- Inside `pages/api`, I can add JS file that will act as path segments in the url
+- Those JS file does not create a react component function
+- These api routes are not defining rendering or returning react components
+- Instead I will define functions which contain server side code because api routes will only run on the server, never on the client side and expose to the client
+- If I hit `/api/new-meetup` in the url then it will trigger the function which I have to define in this file
+
+The `/api/new-meetup.js` file:
+
+```js
+
+```
+
+The `pages/new-meetup/index.js` file:
+
+```js
+
+```
+
+#### Pre-rendering
+
+The `pages/index.js` file:
+
+```js
+
+```
+
+# Getting Meetup Detail Data & Paths
