@@ -55,6 +55,26 @@ export default MyApp
 
 ## Using programmatic (Imperative) Navigation
 
-- pushes a new page onto the stack of pages
+- Use `useRouter` hook to push a new page onto the stack of pages
 - It's the equivalent of using the `Link` component
+
+```js
+import { useRouter } from 'next/router' // Importing package
+
+function MeetupItem(props) {
+  const router = useRouter() // Use 'useRouter' hook
+
+  const showDetailsHandler = () => {
+    router.push('/' + props.id) // Programmatically navigate to dynamic link
+  }
+
+  return <button onClick={showDetailsHandler}>Show Details</button>
+}
+
+export default MeetupItem
+```
+
+- Two ways of pre-rendering
+  - A
+  - B
 - 
