@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+
 import Layout from '../components/layout/Layout'
 import MeetupList from '../components/meetups/MeetupList'
 
@@ -21,7 +23,13 @@ const DUMMY_MEETUPS = [
 ]
 
 const HomePage = () => {
-  return <MeetupList meetups={DUMMY_MEETUPS} />
+  const [meetups, setMeetups] = useState([])
+
+  useEffect(() => {
+    setMeetups(DUMMY_MEETUPS)
+  }, [])
+
+  return <MeetupList meetups={meetups} />
 }
 
 export default HomePage
