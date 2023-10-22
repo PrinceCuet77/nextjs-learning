@@ -1,5 +1,12 @@
 # Table Of Content
 
+- [Table Of Content](#table-of-content)
+- [Next JS Meetup](#next-js-meetup)
+  - [The `_app.js` File \& Layout Wrapper](#the-_appjs-file--layout-wrapper)
+  - [Using programmatic (Imperative) Navigation](#using-programmatic-imperative-navigation)
+  - [Data Fetching for Static Pages](#data-fetching-for-static-pages)
+  - [More on Static Site Generation (SSG)](#more-on-static-site-generation-ssg)
+
 # Next JS Meetup
 
 ## The `_app.js` File & Layout Wrapper
@@ -92,10 +99,10 @@ const DUMMY_MEETUPS = [
 ]
 
 const HomePage = () => {
-  const [meetups, setMeetups] = useState([])
+  const [meetups, setMeetups] = useState([]) // Manage an extra state
 
   useEffect(() => {
-    setMeetups(DUMMY_MEETUPS) // Data fetching
+    setMeetups(DUMMY_MEETUPS) // Data fetching after rendering the component
   }, [])
 
   return <MeetupList meetups={meetups} />
@@ -108,19 +115,19 @@ export default HomePage
   - View an empty `[]` in the page source code
   - Can't find the page content while SEO
 
-![pre-rendering Problem](photo/pre-rendering-problem.png)
+![pre-rendering Problem](photo/pre-rendering-problem2.png)
 
 - _Reason:_
-- When component rendered initially, takes empty array for the first time
-- An empty array data rendered on the server and sent it to the client
-- Client will see the received content
-- After that component re-render as using `useEffect`
-- React will hand over it and load once again with updated data
+  - When component render initially, at first takes `[]` array
+  - An `[]` array render on the server and send it to the client
+  - Client will see the received content from the server
+  - After rendering the component, execute `useEffect`
+  - React will hand over it and load once again with updated data
 
 ![Pre-rendering Forms](photo/two-pre-rendering-form.png)
 
-- To control how the pages should be rendered use two pre-rendering method
-- Two ways of pre-rendering
+- To control how the pages should be rendered
+- Use two pre-rendering method
   - Static Generation
   - Server-side Rendering
 - _Static Generation:_
@@ -128,7 +135,7 @@ export default HomePage
   - A page component is pre-rendered after building the application
 - Use `getStaticProps` regarding that
 - _MUST REMEMBER:_ Only works in the page component files
-- Next JS looks `getStaticProps` in the page component file while rendering that page
+- Next JS looks `getStaticProps` in the page component file before rendering that page component
 - If find it then execute it during pre-rendering process
 - So, Next JS first call that function then execute that pages component function
 - _JOB:_ Prepared `props` for this page component
@@ -137,7 +144,7 @@ export default HomePage
 - Inside `getStaticProps`, should fetch data from on API, database or file system
 - Must return an object
 
-## AA
+## More on Static Site Generation (SSG)
 
 - Use `revalidate` property
 - Which works incremental Static Generation
