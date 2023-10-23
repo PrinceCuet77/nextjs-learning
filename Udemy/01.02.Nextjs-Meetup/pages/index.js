@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react'
-
 import Layout from '../components/layout/Layout'
 import MeetupList from '../components/meetups/MeetupList'
 
@@ -23,21 +21,28 @@ const DUMMY_MEETUPS = [
 ]
 
 const HomePage = (props) => {
-  // const [meetups, setMeetups] = useState([])
-
-  // useEffect(() => {
-  //   setMeetups(DUMMY_MEETUPS)
-  // }, [])
-
   return <MeetupList meetups={props.meetups} />
 }
 
-const getStaticProps = () => {
+export const getServerSideProps = async (context) => {
+  // Will use later
+  const req = context.req
+  const res = context.res
+
   return {
     props: {
       meetups: DUMMY_MEETUPS,
     },
   }
 }
+
+// export const getStaticProps = async () => {
+//   return {
+//     props: {
+//       meetups: DUMMY_MEETUPS,
+//     },
+//     revalidate: 10,
+//   }
+// }
 
 export default HomePage

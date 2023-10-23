@@ -142,15 +142,155 @@ export default HomePage
 - In `getStaticProps`, execute any codes what only run on the server
 - That code execute during the `build` process
 - Inside `getStaticProps`, should fetch data from on API, database or file system
-- Must return an object
+- _MUST_ return an object named `props`
+- _MUST_ export `getStaticProps` function
+- Fetching data from API, so use `async`
+
+```js
+const HomePage = (props) => {
+  return <MeetupList meetups={props.meetups} />
+}
+
+export const getStaticProps = async () => {
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS,
+    },
+  }
+}
+
+export default HomePage
+```
+
+![pre-rendering Problem Solution](photo/pre-rendering-problem-solved.png)
 
 ## More on Static Site Generation (SSG)
 
 - Use `revalidate` property
 - Which works incremental Static Generation
-- Takes number
-- Number of seconds Next JS will wait until it regenerates this page for an incoming request
-- So, this page not just generate in build process & also be generated at least every 10 seconds if there are requests coming in for this page
+- Takes number of seconds
+- Next JS will wait until it regenerates this page for an incoming request
+  - So, this page not just generate in build process &
+  - Also be generated at least every 10 seconds if there are requests coming in for this page
 - Then these regenerated pages would replace the old pre-generated pages
 - Ensures that the data is never older than 10 seconds
 - The number of seconds depends on the data update frequency
+
+```js
+export const getStaticProps = async () => {
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS,
+    },
+    revalidate: 10, // Data update frequency
+  }
+}
+```
+
+## Exploring Server-side Rendering (SSR) with `getServerSideProps`
+
+- Regenerate pages for every incoming requests
+- So, pre-generate the page dynamically after deployment on the server
+
+```js
+export const getServerSideProps = async (context) => {
+  // Will use later
+  const req = context.req
+  const res = context.res
+
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS,
+    },
+  }
+}
+```
+
+- _Disadvantage:_ Wait page to be generated on every incoming request
+- _USE `getServerSideProps`:_ If data is not updated frequently & need `res` and `req`
+- _USE `getStaticProps`:_ If data is updated frequently
+
+## Preparing Paths with `getStaticPaths` & Working With Fallback Pages
+
+- `getStaticPaths` is needed to export in the page component -
+  - If this is a dynamic paths i.e. `pages/[meetupId]/index.js` location
+  - And export `getStaticProps` on it
+- Need pre-generated pages for all URLs
+- As this is dynamic, Next JS needs to know which Id values should pre-generate this page
+- If Id doesn't pre-generated for that dynamic URL, will see a `404` error page
+- `getStaticPaths` returns an object which describes all the dynamic segment values
+- So, all the meetup Ids for which this page should be pre-generated
+- `fallback` defines path array contains all supported parameter values or some of them
+- `fallback: false`
+  - all supported parameter values
+  - So, for `m3` will get an `404` error page
+- `fallback: true`
+  - some of them are supported
+  - So, Next JS will generate a page for this meetup Id dynamically on the server for the incoming request
+
+```js
+export const getStaticPaths = async () => {
+  return {
+    fallback: false,
+    paths: [
+      {
+        params: {
+          meetupId: 'm1',
+        },
+      },
+      {
+        params: {
+          meetupId: 'm2',
+        },
+      },
+    ],
+  }
+}
+```
+
+- `getStaticPaths` runs during the build time
+- When running in the development server, it does run for every incoming request
+- But only on the developer server side
+- So, for any `console.log`, will see output in the terminal not in the dev console or browser
+
+## Introducing API Routes
+
+- _API Routes:_
+  - Doesn't return HTML code
+  - Instead accepting incoming HTTP requests
+  - HTTP requests are `POST`, `PATCH`, `PUT` & `DELETE` requests
+  - Attached `JSON` data with them
+  - Then return `JSON` data
+- API Routes allow to build my own API end points
+- To use this features, create a folder located `/pages/api`
+- Create `/api` inside `/pages` folder
+- So, Next JS picks up any JS files store in there
+- And turns those files into API routes
+- End points can be targeted by request
+- And that should be received `JSON` & returned `JSON` data
+- Inside `/api`, file name will act as path segments in the URL i.e. `/api/new-meetup.js`
+- Doesn't define component
+- Instead define functions which contains server-side code
+- As API routes will only run on the server
+- This code should not be exposed to the client
+- Those functions are triggered whenever a request is sent to this route
+- URL of this file will be `/api/new-meetup`
+- Function takes two parameters -
+  - `req` object - contains data about the incoming request
+  - `res` object - for sending back a response
+  - `res.body` - contains the data of the incoming request
+- In `/pages/api/new-meetup.js` file -
+
+```js
+const handler = (req, res) => {
+  if (req.method === 'POST') {
+    const data = req.body
+
+    const { title, image, address, description } = data
+  }
+}
+
+export default handler
+```
+
+## A
