@@ -6,6 +6,10 @@
   - [Using programmatic (Imperative) Navigation](#using-programmatic-imperative-navigation)
   - [Data Fetching for Static Pages](#data-fetching-for-static-pages)
   - [More on Static Site Generation (SSG)](#more-on-static-site-generation-ssg)
+  - [Exploring Server-side Rendering (SSR) with `getServerSideProps`](#exploring-server-side-rendering-ssr-with-getserversideprops)
+  - [Preparing Paths with `getStaticPaths` \& Working With Fallback Pages](#preparing-paths-with-getstaticpaths--working-with-fallback-pages)
+  - [Introducing API Routes](#introducing-api-routes)
+  - [Working with MongoDB](#working-with-mongodb)
 
 # Next JS Meetup
 
@@ -293,4 +297,86 @@ const handler = (req, res) => {
 export default handler
 ```
 
-## A
+## Working with MongoDB
+
+- use MongoDB Atlas which is cloud based mongoDB database
+- _MongoDb Atlas Cluster:_
+
+![MongoDb Atlas Cluster](photo/database-deployments.png)
+
+- Special make sure, use `MO Sandbox` as a cluster tier
+- Under `Network Acess`, need to add local IP
+- So, local computer is able to send request to MongoDB
+
+![Network Access](photo/network-access.png)
+
+- And Under `Database Acess`, need to create at least one user
+- User must have read & write access to the database
+- So, using this user, can connect to the database cluster
+
+![Database Acess](photo/database-access.png)
+
+- On cluster, press `connect`
+
+![Press Connect](photo/connect-to-your-application.png)
+
+- Press `Drivers`
+
+![MongoDB connection steps](photo/steps.png)
+
+- Install mongoDB -
+
+```txt
+npm install mongodb
+```
+
+- Installed MongoDB driver which makes sending queries to MongoDB easy
+- MongoDB driver allows to connect to the cluster
+- Then insert data or fetch data from there
+- _Note:_ MongoDB is a NoSQL database that works with collections full of documents
+- Collection is kind of tables in a SQL database
+- Documents is the entries in those tables
+- So, collection holds multiple documents
+- Like, table holds multiple entries
+- In `/pages/api/new-meetup.js` file -
+
+```js
+import { MongoClient } from 'mongodb'
+
+const handler = async (req, res) => {
+  if (req.method === 'POST') {
+    const data = req.body
+
+    // Connect with the MongoDB
+    // Return a 'Promise'
+    const client = await MongoClient.connect(
+      'mongodb+srv://<username>:<password>@cluster0.4qkcpn3.mongodb.net/meetups?retryWrites=true&w=majority'
+    )
+
+    // To hold the database which connected with
+    // If database does not exist, it will create one database named 'meetups'
+    const db = client.db()
+
+    // Use same as database name. But can use different name as collection or table
+    const meetupCollection = db.collection('meetups')
+
+    // Query command
+    // Passing an object
+    // Return an object i.e. the automatically generated ID
+    const result = await meetupCollection.insertOne(data)
+
+    console.log(result)
+
+    // Close the database
+    client.close()
+
+    // Use 'res' object to send back a response
+    // 'status' method to set a HTTP status code
+    // 201 - inserted successfully
+    // 'json' method adds a outgoing response
+    res.status(201).json({ message: 'Meetup inserted' })
+  }
+}
+
+export default handler
+```
